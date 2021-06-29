@@ -1,0 +1,1 @@
+{"type": "parameter_renamer", "name_map": {"WindOn": {"AwardedPowerInMWH": "awarded_power", "ReceivedMoneyInEUR": "received_money", "OfferedPowerInMW": "offered_power"}}}

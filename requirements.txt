@@ -1,0 +1,2 @@
+ipykernel
+fameio >=1.4.1

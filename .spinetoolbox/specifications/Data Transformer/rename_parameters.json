@@ -1,0 +1,15 @@
+{
+    "name": "Rename parameters",
+    "item_type": "Data Transformer",
+    "description": "",
+    "filter": {
+        "type": "parameter_rename",
+        "settings": {
+            "WindOn": {
+                "AwardedPowerInMWH": "awarded_power",
+                "ReceivedMoneyInEUR": "received_money",
+                "OfferedPowerInMW": "offered_power"
+            }
+        }
+    }
+}

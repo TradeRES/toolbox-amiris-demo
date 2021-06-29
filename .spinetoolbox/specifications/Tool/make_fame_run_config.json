@@ -1,0 +1,16 @@
+{
+    "name": "Make Fame run config",
+    "tooltype": "python",
+    "includes": [
+        "make_fame_run_config.py"
+    ],
+    "description": "",
+    "inputfiles": [],
+    "inputfiles_opt": [],
+    "outputfiles": [
+        "fameConfig.pb"
+    ],
+    "cmdline_args": [],
+    "execute_in_work": false,
+    "includes_main_path": "../../../scripts"
+}

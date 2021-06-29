@@ -1,0 +1,21 @@
+{
+    "name": "AMIRIS",
+    "tooltype": "python",
+    "includes": [
+        "run-java.py",
+        "amiris-midgard-jar-with-dependencies.jar"
+    ],
+    "description": "",
+    "inputfiles": [],
+    "inputfiles_opt": [],
+    "outputfiles": [
+        "AMIRIS.FameResult.pb"
+    ],
+    "cmdline_args": [
+        "-classpath",
+        "amiris-midgard-jar-with-dependencies.jar",
+        "de.dlr.gitlab.fame.setup.FameRunner"
+    ],
+    "execute_in_work": false,
+    "includes_main_path": "../../../scripts"
+}

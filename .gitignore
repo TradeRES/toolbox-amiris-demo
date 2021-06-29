@@ -1,0 +1,5 @@
+.spinetoolbox/items/*/output/
+*.pb
+scripts/**/*.csv
+*.sqlite
+scripts/amiris-midgard-jar-with-dependencies.jar

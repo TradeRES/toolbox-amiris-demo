@@ -1,0 +1,16 @@
+{
+    "name": "Combine AMIRIS results",
+    "tooltype": "python",
+    "includes": [
+        "combine_AMIRIS_results.py"
+    ],
+    "description": "",
+    "inputfiles": [],
+    "inputfiles_opt": [],
+    "outputfiles": [
+        "AMIRIS_combined.csv"
+    ],
+    "cmdline_args": [],
+    "execute_in_work": false,
+    "includes_main_path": "../../../scripts"
+}

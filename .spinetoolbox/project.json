@@ -1,0 +1,266 @@
+{
+    "project": {
+        "version": 6,
+        "name": "amiris-spine-toolbox-demo",
+        "description": "",
+        "specifications": {
+            "Tool": [
+                {
+                    "type": "path",
+                    "relative": true,
+                    "path": ".spinetoolbox/specifications/Tool/amiris.json"
+                },
+                {
+                    "type": "path",
+                    "relative": true,
+                    "path": ".spinetoolbox/specifications/Tool/combine_amiris_results.json"
+                },
+                {
+                    "type": "path",
+                    "relative": true,
+                    "path": ".spinetoolbox/specifications/Tool/make_fame_run_config.json"
+                }
+            ],
+            "Importer": [
+                {
+                    "type": "path",
+                    "relative": true,
+                    "path": ".spinetoolbox/specifications/Importer/amiris_results_importer.json"
+                }
+            ],
+            "Data Transformer": [
+                {
+                    "type": "path",
+                    "relative": true,
+                    "path": ".spinetoolbox/specifications/Data Transformer/rename_parameters.json"
+                }
+            ]
+        },
+        "connections": [
+            {
+                "from": [
+                    "make FAME run config",
+                    "right"
+                ],
+                "to": [
+                    "AMIRIS",
+                    "left"
+                ]
+            },
+            {
+                "from": [
+                    "Combine AMIRIS results",
+                    "right"
+                ],
+                "to": [
+                    "Import results",
+                    "left"
+                ],
+                "options": {
+                    "use_datapackage": false
+                }
+            },
+            {
+                "from": [
+                    "Import results",
+                    "right"
+                ],
+                "to": [
+                    "Results Data Store",
+                    "left"
+                ]
+            },
+            {
+                "from": [
+                    "Results Data Store",
+                    "right"
+                ],
+                "to": [
+                    "Results Transformer",
+                    "left"
+                ]
+            },
+            {
+                "from": [
+                    "Input data",
+                    "right"
+                ],
+                "to": [
+                    "make FAME run config",
+                    "left"
+                ]
+            },
+            {
+                "from": [
+                    "AMIRIS",
+                    "right"
+                ],
+                "to": [
+                    "Combine AMIRIS results",
+                    "left"
+                ]
+            },
+            {
+                "from": [
+                    "FameSetup",
+                    "right"
+                ],
+                "to": [
+                    "AMIRIS",
+                    "left"
+                ]
+            },
+            {
+                "from": [
+                    "Results Transformer",
+                    "right"
+                ],
+                "to": [
+                    "Renamed results",
+                    "left"
+                ]
+            }
+        ]
+    },
+    "items": {
+        "Results Data Store": {
+            "type": "Data Store",
+            "description": "",
+            "x": 192.25380638212422,
+            "y": 19.267981596601572,
+            "url": {
+                "dialect": "sqlite",
+                "username": "",
+                "password": "",
+                "host": "",
+                "port": "",
+                "database": {
+                    "type": "path",
+                    "relative": true,
+                    "path": ".spinetoolbox/items/results_data_store/Data Store.sqlite"
+                }
+            },
+            "cancel_on_error": true
+        },
+        "Input data": {
+            "type": "Data Connection",
+            "description": "",
+            "x": -498.4908277889624,
+            "y": 33.02235260097859,
+            "references": [
+                {
+                    "type": "path",
+                    "relative": true,
+                    "path": "data/FameioTest/yaml/scenario.yaml"
+                }
+            ]
+        },
+        "AMIRIS": {
+            "type": "Tool",
+            "description": "",
+            "x": -206.20870600472313,
+            "y": 30.753475110676163,
+            "specification": "AMIRIS",
+            "execute_in_work": false,
+            "cmd_line_args": [
+                {
+                    "type": "literal",
+                    "arg": "--file"
+                },
+                {
+                    "type": "resource",
+                    "arg": "fameConfig.pb"
+                },
+                {
+                    "type": "literal",
+                    "arg": "--setup"
+                },
+                {
+                    "type": "resource",
+                    "arg": "fameSetup.yaml"
+                }
+            ]
+        },
+        "Combine AMIRIS results": {
+            "type": "Tool",
+            "description": "",
+            "x": -68.1493512456233,
+            "y": 32.51248337455564,
+            "specification": "Combine AMIRIS results",
+            "execute_in_work": false,
+            "cmd_line_args": [
+                {
+                    "type": "resource",
+                    "arg": "AMIRIS.FameResult.pb"
+                }
+            ]
+        },
+        "make FAME run config": {
+            "type": "Tool",
+            "description": "",
+            "x": -348.226857862482,
+            "y": 32.02830907549782,
+            "specification": "Make Fame run config",
+            "execute_in_work": false,
+            "cmd_line_args": [
+                {
+                    "type": "resource",
+                    "arg": "scenario.yaml"
+                }
+            ]
+        },
+        "Import results": {
+            "type": "Importer",
+            "description": "",
+            "x": 57.92264928186094,
+            "y": 56.01959256223427,
+            "specification": "AMIRIS results importer",
+            "cancel_on_error": false,
+            "file_selection": [
+                [
+                    "AMIRIS_combined.csv",
+                    true
+                ]
+            ]
+        },
+        "FameSetup": {
+            "type": "Data Connection",
+            "description": "",
+            "x": -341.53207105730917,
+            "y": -83.48933092041777,
+            "references": [
+                {
+                    "type": "path",
+                    "relative": true,
+                    "path": "data/fameSetup.yaml"
+                }
+            ]
+        },
+        "Renamed results": {
+            "type": "Data Store",
+            "description": "",
+            "x": 478.4908277889625,
+            "y": 87.48933092041777,
+            "url": {
+                "dialect": "sqlite",
+                "username": "",
+                "password": "",
+                "host": "",
+                "port": "",
+                "database": {
+                    "type": "path",
+                    "relative": true,
+                    "path": ".spinetoolbox/items/renamed_results/Renamed results.sqlite"
+                }
+            },
+            "cancel_on_error": false
+        },
+        "Results Transformer": {
+            "type": "Data Transformer",
+            "description": "",
+            "x": 340.869873769545,
+            "y": 45.93303493789235,
+            "specification": "Rename parameters"
+        }
+    }
+}
