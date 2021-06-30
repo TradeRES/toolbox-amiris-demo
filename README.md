@@ -6,6 +6,7 @@ Spine Toolbox demo project for AMIRIS ABM
 * Python 3.8 or later
 * Spine Toolbox version 0.6.1 or later. 
   Get it from https://pypi.org/project/spinetoolbox/
+* Java SE Runtime Environment 8 (or later)
 
 
 ## Preparing the Python environment
