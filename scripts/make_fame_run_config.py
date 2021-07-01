@@ -20,8 +20,8 @@ scenario_yaml = sys.argv[1]
 curdir = os.getcwd()
 try:
     os.chdir(Path(scenario_yaml).parent.parent)
-#    make_config(scenario_yaml, config)
-#    os.replace(CONFIG[Config.OUTPUT], os.path.join(curdir, CONFIG[Config.OUTPUT]))
+    make_config(scenario_yaml, CONFIG)
+    os.replace(CONFIG[Config.OUTPUT], os.path.join(curdir, CONFIG[Config.OUTPUT]))
 except: 
     raise
 finally:
