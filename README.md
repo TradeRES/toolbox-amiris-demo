@@ -53,7 +53,7 @@ data/FameioTest
 Launch Spine Toolbox and select the virtual environment Python executable 
 (python.exe on Windows) as the Python interpreter from **File -> Settings -> Tools**.
 
-Open the proejct in this folder. You may need to re-create the local data store
+Open the project in this folder. You may need to re-create the local data store
 files. Select *Results Data Store* and click **New Spine db**. Repeat for 
 *Renamed results*.
 
