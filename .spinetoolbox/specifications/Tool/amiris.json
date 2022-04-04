@@ -3,7 +3,7 @@
     "tooltype": "python",
     "includes": [
         "run-java.py",
-        "amiris-midgard-jar-with-dependencies.jar"
+        "amiris.jar"
     ],
     "description": "",
     "inputfiles": [],
@@ -13,9 +13,16 @@
     ],
     "cmdline_args": [
         "-classpath",
-        "amiris-midgard-jar-with-dependencies.jar",
+        "amiris.jar",
+        "-Dlog4j.configuration=file:log4j.properties",
         "de.dlr.gitlab.fame.setup.FameRunner"
     ],
     "execute_in_work": false,
-    "includes_main_path": "../../../scripts"
+    "includes_main_path": "../../../scripts",
+    "execution_settings": {
+        "kernel_spec_name": "",
+        "env": "",
+        "use_jupyter_console": false,
+        "executable": ""
+    }
 }

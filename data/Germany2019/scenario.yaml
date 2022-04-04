@@ -1,0 +1,506 @@
+# AMIRIS back-testing scenario for German day-ahead electricity market in 2019
+# Latest version at: https://gitlab.com/dlr-ve/esy/amiris/examples/
+# Built for AMIRIS version: see project README at: ../README.md
+
+Schema: !include "schema.yaml"
+
+GeneralProperties:
+  RunId: 1
+  Simulation:
+    StartTime: 2018-12-31_23:58:00
+    StopTime: 2019-12-31_23:58:00
+    RandomSeed: 1
+  Output:
+    Interval: 100
+    Process: 0
+
+Variables:
+  - &portfolioBuildingOffset 60
+
+Agents:
+  - Type: EnergyExchange
+    Id: 1
+    Attributes:
+      DistributionMethod: SAME_SHARES
+      GateClosureInfoOffsetInSeconds: 11
+
+  - Type: SystemOperatorTrader
+    Id: 2
+
+  - Type: CarbonMarket
+    Id: 3
+    Attributes:
+      OperationMode: FIXED
+      Co2Prices: "./timeseries/co2_price.csv"
+
+  # Sources:
+  # LIGNITE and NUCLEAR are own estimates.
+  # Fuel costs https://www.bmwi.de/Redaktion/DE/Artikel/Energie/energiedaten-gesamtausgabe.html, Table 26
+  # Transportation costs https://www.bmwi.de/Redaktion/DE/Publikationen/Studien/definition-und-monitoring-der-versorgungssicherheit-an-den-europaeischen-strommaerkten.pdf?__blob=publicationFile&v=18, p. 163
+  - Type: FuelsMarket
+    Id: 4
+    Attributes:
+      FuelPrices:
+        - FuelType: NUCLEAR
+          Price: 2.00
+          ConversionFactor: 1.0
+        - FuelType: LIGNITE
+          Price: 5.00
+          ConversionFactor: 1.0
+        - FuelType: HARD_COAL
+          Price: "./timeseries/hard_coal_cost.csv"
+          ConversionFactor: 1.0
+        - FuelType: NATURAL_GAS
+          Price: "./timeseries/natural_gas_cost.csv"
+          ConversionFactor: 1.0
+        - FuelType: OIL
+          Price: "./timeseries/oil_cost.csv"
+          ConversionFactor: 1.0
+
+  - Type: DemandTrader
+    Id: 100
+    Attributes:
+      Loads:
+        - ValueOfLostLoad: 3000.0
+          DemandSeries: "./timeseries/demand_with_ImportsExports.csv"
+
+  - Type: MeritOrderForecaster
+    Id: 6
+    Attributes:
+      DistributionMethod: SAME_SHARES
+      ForecastPeriodInHours: 168
+      ForecastRequestOffsetInSeconds: 27
+
+  - Type: StorageTrader #Pumped Hydro
+    Id: 7
+    Attributes:
+      ForecastRequestOffsetInSeconds: 22
+      Device:
+        EnergyToPowerRatio: 5.0
+        SelfDischargeRatePerHour: 0.0
+        ChargingEfficiency: 0.89
+        DischargingEfficiency: 0.89
+        InitialEnergyLevelInMWH: 30000
+        InstalledPowerInMW: 8000.0
+      Strategy:
+        StrategistType: SINGLE_AGENT_MIN_SYSTEM_COST
+        ForecastPeriodInHours: 168
+        ScheduleDurationInHours: 24
+        SingleAgent:
+          PurchaseLeviesAndTaxesInEURperMWH: 0.0
+          ModelledChargingSteps: 50
+
+  - Type: RenewableTrader
+    Id: 11
+    Attributes:
+      ShareOfRevenues: 0.0
+
+  - Type: NoSupportTrader
+    Id: 12
+    Attributes:
+      ShareOfRevenues: 0.0
+
+  - Type: SystemOperatorTrader
+    Id: 13
+
+  - Type: SupportPolicy
+    Id: 90
+    Attributes:
+      SetSupportData:
+        - Set: PvFit
+          FIT:
+            TsFit: 120.0
+        - Set: WindOnFit
+          FIT:
+            TsFit: 85.0
+        - Set: RunOfRiver
+          FIT:
+            TsFit: 100.0
+        - Set: PvMpvarCluster1
+          MPVAR:
+            Lcoe: 97.21
+        - Set: PvMpvarCluster2
+          MPVAR:
+            Lcoe: 202.91
+        - Set: PvMpvarCluster3
+          MPVAR:
+            Lcoe: 286.67
+        - Set: PvMpvarCluster4
+          MPVAR:
+            Lcoe: 340.07
+        - Set: PvMpvarCluster5
+          MPVAR:
+            Lcoe: 440.05
+        - Set: WindOnMpvarCluster1
+          MPVAR:
+            Lcoe: 70.58
+        - Set: WindOnMpvarCluster2
+          MPVAR:
+            Lcoe: 79.65
+        - Set: WindOnMpvarCluster3
+          MPVAR:
+            Lcoe: 87.24
+        - Set: WindOnMpvarCluster4
+          MPVAR:
+            Lcoe: 94.17
+        - Set: WindOnMpvarCluster5
+          MPVAR:
+            Lcoe: 100.26
+        - Set: WindOffMpvarCluster1
+          MPVAR:
+            Lcoe: 154
+        - Set: WindOffMpvarCluster2
+          MPVAR:
+            Lcoe: 174.5
+        - Set: WindOffMpvarCluster3
+          MPVAR:
+            Lcoe: 184
+        - Set: WindOffMpvarCluster4
+          MPVAR:
+            Lcoe: 194
+
+  - Type: ConventionalPlantOperator
+    Id: 500
+
+  - Type: PredefinedPlantBuilder
+    Id: 2000
+    Attributes:
+      PortfolioBuildingOffsetInSeconds: *portfolioBuildingOffset
+      Prototype:
+        FuelType: NUCLEAR
+        SpecificCo2EmissionsInTperMWH: 0.0
+        PlannedAvailability: 1.0
+        UnplannedAvailabilityFactor: 0.96
+        OpexVarInEURperMWH: 0.5
+        CyclingCostInEURperMW: 0.0
+      Efficiency:
+        Minimal: 0.330
+        Maximal: 0.331
+      BlockSizeInMW: 900.0
+      InstalledPowerInMW: 9516.0
+
+  - Type: ConventionalTrader
+    Id: 1000
+    Attributes:
+      minMarkup: -150
+      maxMarkup: -90
+
+  - Type: ConventionalPlantOperator
+    Id: 501
+
+  - Type: PredefinedPlantBuilder
+    Id: 2001
+    Attributes:
+      PortfolioBuildingOffsetInSeconds: *portfolioBuildingOffset
+      Prototype:
+        FuelType: LIGNITE
+        SpecificCo2EmissionsInTperMWH: 0.364
+        PlannedAvailability: 1.0
+        UnplannedAvailabilityFactor: 0.98
+        OpexVarInEURperMWH: 2.0
+        CyclingCostInEURperMW: 0.0
+      Efficiency:
+        Minimal: 0.313
+        Maximal: 0.452
+      BlockSizeInMW: 500.0
+      InstalledPowerInMW: 18049.0
+
+  - Type: ConventionalTrader
+    Id: 1001
+    Attributes:
+      minMarkup: -80
+      maxMarkup: 0
+
+  - Type: ConventionalPlantOperator
+    Id: 502
+
+  - Type: PredefinedPlantBuilder
+    Id: 2002
+    Attributes:
+      PortfolioBuildingOffsetInSeconds: *portfolioBuildingOffset
+      Prototype:
+        FuelType: HARD_COAL
+        SpecificCo2EmissionsInTperMWH: 0.341
+        PlannedAvailability: 1.0
+        UnplannedAvailabilityFactor: 0.96
+        OpexVarInEURperMWH: 2.5
+        CyclingCostInEURperMW: 0.0
+      Efficiency:
+        Minimal: 0.340
+        Maximal: 0.492
+      BlockSizeInMW: 300.0
+      InstalledPowerInMW: 22051.8
+
+  - Type: ConventionalTrader
+    Id: 1002
+    Attributes:
+      minMarkup: -10
+      maxMarkup: 0
+
+  - Type: ConventionalPlantOperator
+    Id: 503
+
+  - Type: PredefinedPlantBuilder
+    Id: 2003
+    Attributes:
+      PortfolioBuildingOffsetInSeconds: *portfolioBuildingOffset
+      Prototype:
+        FuelType: NATURAL_GAS #gasCC
+        SpecificCo2EmissionsInTperMWH: 0.201
+        PlannedAvailability: 1.0
+        UnplannedAvailabilityFactor: 0.97
+        OpexVarInEURperMWH: 1.2
+        CyclingCostInEURperMW: 0
+      Efficiency:
+        Minimal: 0.445
+        Maximal: 0.643
+      BlockSizeInMW: 200.0
+      InstalledPowerInMW: 16062.2
+
+  - Type: ConventionalTrader
+    Id: 1003
+    Attributes:
+      minMarkup: 0
+      maxMarkup: 100
+
+  - Type: ConventionalPlantOperator
+    Id: 504
+
+  - Type: PredefinedPlantBuilder
+    Id: 2004
+    Attributes:
+      PortfolioBuildingOffsetInSeconds: *portfolioBuildingOffset
+      Prototype:
+        FuelType: NATURAL_GAS #gasTurbine
+        SpecificCo2EmissionsInTperMWH: 0.201
+        PlannedAvailability: 1.0
+        UnplannedAvailabilityFactor: 0.97
+        OpexVarInEURperMWH: 1.2
+        CyclingCostInEURperMW: 0.0
+      Efficiency:
+        Minimal: 0.333
+        Maximal: 0.426
+      BlockSizeInMW: 100.0
+      InstalledPowerInMW: 7820.6
+
+  - Type: ConventionalTrader
+    Id: 1004
+    Attributes:
+      minMarkup: -20
+      maxMarkup: 0
+
+  - Type: ConventionalPlantOperator
+    Id: 505
+
+  - Type: PredefinedPlantBuilder
+    Id: 2005
+    Attributes:
+      PortfolioBuildingOffsetInSeconds: *portfolioBuildingOffset
+      Prototype:
+        FuelType: OIL # oil, other fossil fuels, mixed fossil fuels
+        SpecificCo2EmissionsInTperMWH: 0.264
+        PlannedAvailability: 1.0
+        UnplannedAvailabilityFactor: 0.93
+        OpexVarInEURperMWH: 1.2
+        CyclingCostInEURperMW: 0.0
+      Efficiency:
+        Minimal: 0.309
+        Maximal: 0.399
+      BlockSizeInMW: 100.0
+      InstalledPowerInMW: 3747.6
+
+  - Type: ConventionalTrader
+    Id: 1005
+    Attributes:
+      minMarkup: 0
+      maxMarkup: 0
+
+  - Type: VariableRenewableOperator
+    Id: 10
+    Attributes:
+      Set: PvFit
+      EnergyCarrier: PV
+      SupportInstrument: FIT
+      InstalledPowerInMW: 30932.0
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/Solar_profile.csv"
+
+  - Type: VariableRenewableOperator
+    Id: 20
+    Attributes:
+      Set: WindOnFit
+      SupportInstrument: FIT
+      EnergyCarrier: WindOn
+      InstalledPowerInMW: 2328.0
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/WindOnshore_profile.csv"
+
+  - Type: VariableRenewableOperator
+    Id: 50
+    Attributes:
+      Set: RunOfRiver
+      SupportInstrument: FIT
+      EnergyCarrier: RunOfRiver
+      InstalledPowerInMW: 5317.0
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/runofriver_profile.csv"
+
+  - Type: Biogas
+    Id: 52
+    Attributes:
+      Set: Biogas
+      EnergyCarrier: Biogas
+      InstalledPowerInMW: 7908.0
+      OpexVarInEURperMWH: 0.0
+      DispatchTimeSeries: "./timeseries/Biomass_profile.csv"
+      OperationMode: FROM_FILE
+
+  - Type: VariableRenewableOperator
+    Id: 53
+    Attributes:
+      EnergyCarrier: Other #otherres
+      InstalledPowerInMW: 471
+      OpexVarInEURperMWH: 1.2
+      YieldProfile: "./timeseries/Other_res_profile.csv"
+
+  - Type: VariableRenewableOperator
+    Id: 60
+    Attributes:
+      Set: PvMpvarCluster1
+      EnergyCarrier: PV
+      SupportInstrument: MPVAR
+      InstalledPowerInMW: 8015.0
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/Solar_profile.csv"
+
+  - Type: VariableRenewableOperator
+    Id: 61
+    Attributes:
+      Set: PvMpvarCluster2
+      EnergyCarrier: PV
+      SupportInstrument: MPVAR
+      InstalledPowerInMW: 4257.0
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/Solar_profile.csv"
+
+  - Type: VariableRenewableOperator
+    Id: 62
+    Attributes:
+      Set: PvMpvarCluster3
+      EnergyCarrier: PV
+      SupportInstrument: MPVAR
+      InstalledPowerInMW: 1229.0
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/Solar_profile.csv"
+
+  - Type: VariableRenewableOperator
+    Id: 63
+    Attributes:
+      Set: PvMpvarCluster4
+      EnergyCarrier: PV
+      SupportInstrument: MPVAR
+      InstalledPowerInMW: 806.0
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/Solar_profile.csv"
+
+  - Type: VariableRenewableOperator
+    Id: 64
+    Attributes:
+      Set: PvMpvarCluster5
+      EnergyCarrier: PV
+      SupportInstrument: MPVAR
+      InstalledPowerInMW: 197.0
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/Solar_profile.csv"
+
+  - Type: VariableRenewableOperator
+    Id: 70
+    Attributes:
+      Set: WindOnMpvarCluster1
+      SupportInstrument: MPVAR
+      EnergyCarrier: WindOn
+      InstalledPowerInMW: 3804.0
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/WindOnshore_profile.csv"
+
+  - Type: VariableRenewableOperator
+    Id: 71
+    Attributes:
+      Set: WindOnMpvarCluster2
+      SupportInstrument: MPVAR
+      EnergyCarrier: WindOn
+      InstalledPowerInMW: 5670.0
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/WindOnshore_profile.csv"
+
+  - Type: VariableRenewableOperator
+    Id: 72
+    Attributes:
+      Set: WindOnMpvarCluster3
+      SupportInstrument: MPVAR
+      EnergyCarrier: WindOn
+      InstalledPowerInMW: 13974.0
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/WindOnshore_profile.csv"
+
+  - Type: VariableRenewableOperator
+    Id: 73
+    Attributes:
+      Set: WindOnMpvarCluster4
+      SupportInstrument: MPVAR
+      EnergyCarrier: WindOn
+      InstalledPowerInMW: 14503.0
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/WindOnshore_profile.csv"
+
+  - Type: VariableRenewableOperator
+    Id: 74
+    Attributes:
+      Set: WindOnMpvarCluster5
+      SupportInstrument: MPVAR
+      EnergyCarrier: WindOn
+      InstalledPowerInMW: 12666.0
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/WindOnshore_profile.csv"
+
+  - Type: VariableRenewableOperator
+    Id: 80
+    Attributes:
+      Set: WindOffMpvarCluster1
+      SupportInstrument: MPVAR
+      EnergyCarrier: WindOff
+      InstalledPowerInMW: 672.0
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/WindOffshore_profile.csv"
+
+  - Type: VariableRenewableOperator
+    Id: 81
+    Attributes:
+      Set: WindOffMpvarCluster2
+      SupportInstrument: MPVAR
+      EnergyCarrier: WindOff
+      InstalledPowerInMW: 79.0
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/WindOffshore_profile.csv"
+
+  - Type: VariableRenewableOperator
+    Id: 82
+    Attributes:
+      Set: WindOffMpvarCluster3
+      SupportInstrument: MPVAR
+      EnergyCarrier: WindOff
+      InstalledPowerInMW: 2108.0
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/WindOffshore_profile.csv"
+
+  - Type: VariableRenewableOperator
+    Id: 83
+    Attributes:
+      Set: WindOffMpvarCluster4
+      SupportInstrument: MPVAR
+      EnergyCarrier: WindOff
+      InstalledPowerInMW: 4644.0
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/WindOffshore_profile.csv"
+
+Contracts: !include ["contracts/*.yaml", "Contracts"]

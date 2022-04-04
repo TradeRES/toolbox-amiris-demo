@@ -1,0 +1,19 @@
+{
+    "items": {
+        "Results Data Store": {
+            "url": {
+                "username": "",
+                "password": ""
+            }
+        },
+        "Renamed results": {
+            "url": {
+                "username": "",
+                "password": ""
+            }
+        },
+        "Scenario": {
+            "db_credentials": {}
+        }
+    }
+}

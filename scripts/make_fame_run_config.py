@@ -12,14 +12,17 @@ CONFIG = {
     Config.LOG_FILE: None,
 }
 
+#remove previous results
+if os.path.exists('fameConfig.pb'):
+  os.remove('fameConfig.pb')
+
 # Get scenario file from the command line
 scenario_yaml = sys.argv[1] 
 
-# Hack to overcome the issue that `make_config` has to be run
-# from the scenario root dir (containing yaml and data folders
+# `make_config` has to be run from the scenario root dir containing yaml and data folders
 curdir = os.getcwd()
 try:
-    os.chdir(Path(scenario_yaml).parent.parent)
+    os.chdir(Path(scenario_yaml).parent)
     make_config(scenario_yaml, CONFIG)
     os.replace(CONFIG[Config.OUTPUT], os.path.join(curdir, CONFIG[Config.OUTPUT]))
 except: 

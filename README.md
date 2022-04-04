@@ -1,67 +1,62 @@
-Spine Toolbox demo project for AMIRIS ABM
-=========================================
-
+# Spine Toolbox demo project for AMIRIS
 ## Requirements
-
-* Python 3.8 or later
-* Spine Toolbox version 0.6.1 or later. 
-  Get it from https://pypi.org/project/spinetoolbox/
-* Java SE Runtime Environment 8 (or later)
-
+* git
+* Python 3.8
+* Java SE Runtime Environment 8 (or later); get it, e.g. from https://adoptium.net/
+* Spine Toolbox **development** version: version 0.6.1 or later. 
+  get it from: https://github.com/Spine-project/Spine-Toolbox (or follow instructions below)
 
 ## Preparing the Python environment
 
+### Using Venv
 Create a virtual environment to isolate the new packages.
-
-    python -m venv <path to virtual env>
-
-Activate the environment and install required Python packages with (on Windows)
     
-    \path\to\env\Scripts\activate.bat
+	python -m venv <path to virtual env>
+
+Activate the environment (on Windows): `\path\to\env\Scripts\activate.bat`
+Activate the environment (on Linux): `source /path/to/env/bin/activate`
+	
+Then, install required Python packages with
+	
     pip install -r requirements.txt
+	pip install git+https://github.com/Spine-project/spinetoolbox-dev
     
-On Linux systems, activation is done with `source /path/to/env/bin/activate`.
+### Using conda
+Create a conda environment to isolate the new packages.
 
+    conda create -n <nameOfEnvironment> python=3.8
 
-## Inserting data
+Activate the environment: `conda activate <nameOfEnvironment>`
+Then, install required Python packages with
+	pip install -r requirements.txt
+	pip install git+https://github.com/Spine-project/spinetoolbox-dev
 
-Place AMIRIS Java archive file (amiris-midgard-jar-with-dependencies.jar) 
-into folder *scripts*.
+## Get AMIRIS spine-toolbox workflow
+Checkout the AMIRIS spine-toolbox workflow using
 
-Place AMIRIS input data into the folder *data/FameioTest* so that the final folder 
-structure is as follows
-
-```
-data/FameioTest
-|
-├───ref_data
-│   ├───carbonmarket
-│   ├───conventionals
-│   ├───demand
-│   ...
-|
-└───yaml
-    │   scenario.yaml
-    │   schema.yaml
-    │
-    └───contracts/
-```
-
+    git clone https://github.com/TradeRES/toolbox-amiris-demo
 
 ## Opening the Toolbox project
+If not still active, activate the Python environment created above. Then, launch Spine Toolbox:
 
-Launch Spine Toolbox and select the virtual environment Python executable 
-(python.exe on Windows) as the Python interpreter from **File -> Settings -> Tools**.
+On Windows: `spinetoolbox.exe`
+On Linux: `spinetoolbox`
 
-Open the project in this folder. You may need to re-create the local data store
-files. Select *Results Data Store* and click **New Spine db**. Repeat for 
+In the toolbox menu, navigate to **File -> Settings -> Tools** and ensure that the "Python (default settings)" 
+points to the python interpreter of the currently active Python environment.
+
+Open the "toolbox-amiris-demo" project from the folder you have cloned it into. 
+You may need to re-create the local data store files. Select *Results Data Store* and click **New Spine db**. Repeat for 
 *Renamed results*.
 
-You can now execute the whole workflow by clicking the black ‘play’ button 
-on the Toolbar (**Execute project**).
+You can now execute the whole workflow by clicking the black ‘play’ button on the Toolbar (**Execute project**).
 
 
 ## License and Terms of Use
-
 The Spine Toolbox project example provided here can be used without any limitations.
+
+This excludes:
+* "scripts/amiris.jar", for which license of https://gitlab.com/dlr-ve/esy/amiris/amiris applies
+* all files below "data/Germany2019", for which licenses of https://gitlab.com/dlr-ve/esy/amiris/examples apply.
+
 

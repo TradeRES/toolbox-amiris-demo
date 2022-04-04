@@ -1,6 +1,6 @@
 {
     "project": {
-        "version": 6,
+        "version": 7,
         "name": "amiris-spine-toolbox-demo",
         "description": "",
         "specifications": {
@@ -38,6 +38,7 @@
         },
         "connections": [
             {
+                "name": "from make FAME run config to AMIRIS",
                 "from": [
                     "make FAME run config",
                     "right"
@@ -48,6 +49,7 @@
                 ]
             },
             {
+                "name": "from Combine AMIRIS results to Import results",
                 "from": [
                     "Combine AMIRIS results",
                     "right"
@@ -61,6 +63,7 @@
                 }
             },
             {
+                "name": "from Import results to Results Data Store",
                 "from": [
                     "Import results",
                     "right"
@@ -71,6 +74,7 @@
                 ]
             },
             {
+                "name": "from Results Data Store to Results Transformer",
                 "from": [
                     "Results Data Store",
                     "right"
@@ -81,8 +85,9 @@
                 ]
             },
             {
+                "name": "from Scenario to make FAME run config",
                 "from": [
-                    "Input data",
+                    "Scenario",
                     "right"
                 ],
                 "to": [
@@ -91,6 +96,7 @@
                 ]
             },
             {
+                "name": "from AMIRIS to Combine AMIRIS results",
                 "from": [
                     "AMIRIS",
                     "right"
@@ -101,16 +107,7 @@
                 ]
             },
             {
-                "from": [
-                    "FameSetup",
-                    "right"
-                ],
-                "to": [
-                    "AMIRIS",
-                    "left"
-                ]
-            },
-            {
+                "name": "from Results Transformer to Renamed results",
                 "from": [
                     "Results Transformer",
                     "right"
@@ -120,46 +117,31 @@
                     "left"
                 ]
             }
-        ]
+        ],
+        "jumps": []
     },
     "items": {
         "Results Data Store": {
             "type": "Data Store",
             "description": "",
-            "x": 192.25380638212422,
-            "y": 19.267981596601572,
+            "x": 195.70900363369006,
+            "y": 33.3387706028651,
             "url": {
                 "dialect": "sqlite",
-                "username": "",
-                "password": "",
                 "host": "",
                 "port": "",
                 "database": {
                     "type": "path",
                     "relative": true,
-                    "path": ".spinetoolbox/items/results_data_store/Data Store.sqlite"
+                    "path": ".spinetoolbox/items/results_data_store/Results Data Store.sqlite"
                 }
-            },
-            "cancel_on_error": true
-        },
-        "Input data": {
-            "type": "Data Connection",
-            "description": "",
-            "x": -498.4908277889624,
-            "y": 33.02235260097859,
-            "references": [
-                {
-                    "type": "path",
-                    "relative": true,
-                    "path": "data/FameioTest/yaml/scenario.yaml"
-                }
-            ]
+            }
         },
         "AMIRIS": {
             "type": "Tool",
             "description": "",
-            "x": -206.20870600472313,
-            "y": 30.753475110676163,
+            "x": -207.0725053176146,
+            "y": 33.59487304935057,
             "specification": "AMIRIS",
             "execute_in_work": false,
             "cmd_line_args": [
@@ -170,22 +152,14 @@
                 {
                     "type": "resource",
                     "arg": "fameConfig.pb"
-                },
-                {
-                    "type": "literal",
-                    "arg": "--setup"
-                },
-                {
-                    "type": "resource",
-                    "arg": "fameSetup.yaml"
                 }
             ]
         },
         "Combine AMIRIS results": {
             "type": "Tool",
             "description": "",
-            "x": -68.1493512456233,
-            "y": 32.51248337455564,
+            "x": -66.91157619265036,
+            "y": 33.62628268744712,
             "specification": "Combine AMIRIS results",
             "execute_in_work": false,
             "cmd_line_args": [
@@ -198,24 +172,26 @@
         "make FAME run config": {
             "type": "Tool",
             "description": "",
-            "x": -348.226857862482,
-            "y": 32.02830907549782,
+            "x": -349.0906571753735,
+            "y": 33.142108388389296,
             "specification": "Make Fame run config",
             "execute_in_work": false,
             "cmd_line_args": [
                 {
                     "type": "resource",
-                    "arg": "scenario.yaml"
+                    "arg": "<project>/data/Germany2019/scenario.yaml"
                 }
             ]
         },
         "Import results": {
             "type": "Importer",
             "description": "",
-            "x": 57.92264928186094,
-            "y": 56.01959256223427,
+            "x": 63.73754880664421,
+            "y": 33.615665868639724,
             "specification": "AMIRIS results importer",
             "cancel_on_error": false,
+            "purge_before_writing": false,
+            "on_conflict": "merge",
             "file_selection": [
                 [
                     "AMIRIS_combined.csv",
@@ -223,28 +199,13 @@
                 ]
             ]
         },
-        "FameSetup": {
-            "type": "Data Connection",
-            "description": "",
-            "x": -341.53207105730917,
-            "y": -83.48933092041777,
-            "references": [
-                {
-                    "type": "path",
-                    "relative": true,
-                    "path": "data/fameSetup.yaml"
-                }
-            ]
-        },
         "Renamed results": {
             "type": "Data Store",
             "description": "",
-            "x": 478.4908277889625,
-            "y": 87.48933092041777,
+            "x": 473.3080319116137,
+            "y": 33.31997420825513,
             "url": {
                 "dialect": "sqlite",
-                "username": "",
-                "password": "",
                 "host": "",
                 "port": "",
                 "database": {
@@ -252,15 +213,28 @@
                     "relative": true,
                     "path": ".spinetoolbox/items/renamed_results/Renamed results.sqlite"
                 }
-            },
-            "cancel_on_error": false
+            }
         },
         "Results Transformer": {
             "type": "Data Transformer",
             "description": "",
-            "x": 340.869873769545,
-            "y": 45.93303493789235,
+            "x": 341.73367308243644,
+            "y": 33.22604524452029,
             "specification": "Rename parameters"
+        },
+        "Scenario": {
+            "type": "Data Connection",
+            "description": "",
+            "x": -498.4908277889624,
+            "y": 33.27235260097859,
+            "file_references": [
+                {
+                    "type": "path",
+                    "relative": true,
+                    "path": "data/Germany2019/scenario.yaml"
+                }
+            ],
+            "db_references": []
         }
     }
 }
