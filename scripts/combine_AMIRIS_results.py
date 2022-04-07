@@ -9,7 +9,6 @@ from fameio.scripts.convert_results import run as convert_results
 from fameio.source.cli import Config
 from fameio.source.time import FameTime
 
-
 CONFIG = {
     Config.LOG_LEVEL: "info",
     Config.LOG_FILE: None,
@@ -49,6 +48,9 @@ convert_results(input_pb_file, CONFIG)
 # Combine csv files into one data frame
 csv_files = glob(f'{CONFIG[Config.OUTPUT]}/*.csv')
 data = pd.concat(map(process_file, csv_files))
+
+# Drop empty rows
+data.dropna(axis=0, how='any', subset=['value'], inplace=True)
 
 # Write results
 data.to_csv('AMIRIS_combined.csv', index=False)
