@@ -15,7 +15,7 @@ CONFIG = {
     Options.AGENT_LIST: ["EnergyExchange"],
     Options.OUTPUT: "FameResults_converted",
     Options.SINGLE_AGENT_EXPORT: False,
-	Options.RESOLVE_COMPLEX_FIELD: ResolveOptions.IGNORE,
+    Options.RESOLVE_COMPLEX_FIELD: ResolveOptions.IGNORE,
 }
 
 
@@ -25,11 +25,8 @@ def process_file(filepath: str) -> pd.DataFrame:
     object_class = Path(filepath).stem
     assert df.columns[0] == "AgentId"
     assert df.columns[1] == "TimeStep"
-    # Convert times steps
-    df["TimeStamp"] = df["TimeStep"].apply(FameTime.convert_fame_time_step_to_datetime)
-    # Hack to replace non-standard separator '_' with 'T'
-    df["TimeStamp"] = df["TimeStamp"].str.replace("_", "T")
     df["ObjectClass"] = object_class
+    df["TimeStamp"] = df["TimeStep"]
     return df.drop("TimeStep", axis=1).melt(["ObjectClass", "AgentId", "TimeStamp"])
 
 
