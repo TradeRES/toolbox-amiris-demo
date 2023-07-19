@@ -17,6 +17,5 @@
         "-Dlog4j.configuration=file:log4j.properties",
         "de.dlr.gitlab.fame.setup.FameRunner"
     ],
-    "execute_in_work": false,
     "includes_main_path": "../../../scripts"
 }
