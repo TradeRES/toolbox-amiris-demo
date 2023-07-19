@@ -3,12 +3,12 @@ import os
 from pathlib import Path
 
 from fameio.scripts.make_config import run as make_config
-from fameio.source.cli import Config
+from fameio.source.cli import Options
 
 CONFIG = {
-    Config.LOG_LEVEL: "info",
-    Config.OUTPUT: "fameConfig.pb",
-    Config.LOG_FILE: None,
+    Options.LOG_LEVEL: "info",
+    Options.OUTPUT: "fameConfig.pb",
+    Options.LOG_FILE: None,
 }
 
 # remove previous results
@@ -23,7 +23,7 @@ curdir = os.getcwd()
 try:
     os.chdir(Path(scenario_yaml).parent)
     make_config(scenario_yaml, CONFIG)
-    os.replace(CONFIG[Config.OUTPUT], os.path.join(curdir, CONFIG[Config.OUTPUT]))
+    os.replace(CONFIG[Options.OUTPUT], os.path.join(curdir, CONFIG[Options.OUTPUT]))
 except:
     raise
 finally:

@@ -1,2 +1,2 @@
 ipykernel
-fameio >=1.4.1
+fameio >= 1.8, < 1.9
