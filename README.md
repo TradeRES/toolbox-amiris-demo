@@ -42,7 +42,7 @@ Install amirispy: `pip install amirispy`
 ## Get AMIRIS spine-toolbox workflow
 Checkout the AMIRIS spine-toolbox workflow: `git clone https://github.com/TradeRES/toolbox-amiris-demo`
 
-## Opening the Toolbox project
+## Setup of Toolbox project
 If not still active, activate the **SpineToolbox** Python environment created above.
 Then, launch Spine Toolbox: `spinetoolbox`
 
@@ -50,10 +50,17 @@ In the toolbox menu, navigate to **File -> Settings -> Tools** and ensure that t
 
 Open the "toolbox-amiris-demo" project from the folder you have cloned it into.
 
-Create local data store files.
-For this, select the tool *Results Data Store* in the *Design View* window and click **New Spine db**.
+### Update Tool Python environments
+In the *Design View* window, double click on *make Fame run config*. In the drop-down box *Tool type* switch to tool type **Julia**, then return to tool type **Python**. This will update your interpreter settings to the defaults specified before. Close the tool window and save changes.
+
+Repeat for tools *AMIRIS* and *Combine AMIRIS results*.
+
+### Create local data store files
+For this, select the tool *Results Data Store* in the *Design View* window and click **New Spine db**. 
+
 Repeat for tool *Renamed results*.
 
+### Run
 You can now execute the whole workflow by clicking the black ‘play’ button on the Toolbar (**Execute project**).
 
 ## License and Terms of Use
