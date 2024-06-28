@@ -1,4 +1,10 @@
-# Spine Toolbox demo project for AMIRIS
+# Spine Toolbox demo for AMIRIS
+AMIRIS - the open **A**gent-based **M**arket model for the **I**nvestigation of **R**enewable and **I**ntegrated energy **S**ystems - aims at enabling scientists to dissect the complex questions arising with respect to future energy markets, their market design, and energy-related policy instruments.
+The model computes electricity prices endogenously based on the simulation of strategic bidding behavior of prototyped market actors.
+This bidding behavior does not only reflect marginal prices, but can also consider effects of support instruments like market premia, uncertainties and limited information, or market power.
+
+Find out more about AMIRIS [here](https://dlr-ve.gitlab.io/esy/amiris/home/), or check out its [repository](https://gitlab.com/dlr-ve/esy/amiris/amiris).
+
 ## Requirements
 * git
 * Python 3.9 or 3.10
